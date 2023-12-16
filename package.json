@@ -1,0 +1,24 @@
+{
+  "name": "proyecto",
+  "version": "1.0.0",
+  "description": "Proyecto del módulo Backend con node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^10.2.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "https": "^1.0.0",
+    "mysql": "^2.18.1",
+    "querystring": "^0.2.1",
+    "url": "^0.11.3"
+  }
+}
