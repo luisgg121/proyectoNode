@@ -1,13 +1,8 @@
 require('../node_modules/dotenv').config();
-// const config = require('../config.js');
-
 
 const express = require('express');
 const model = express();
 const mysql = require('mysql');
-
-const host = 'localhost';
-const port = 8080;
 
 var accion = 'alta';
 var nombre = 'Luis';
@@ -45,16 +40,6 @@ const connection = mysql.createConnection({
     database: process.env.DB_NAME,
     port: process.env.DB_PORT
 })
-
-// const connection = mysql.createConnection({
-//     localhost: 'localhost',
-//     user: 'root',
-//     password: process.env.DB_PASS,
-//     database: 'libros',
-//     port: 3306
-// })
-
-// console.log(connection.query);
 
 // Funciones CRUD
 model.insertar = (tabla, registro) => {
