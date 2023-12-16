@@ -1,6 +1,7 @@
 // Para revisar el funcionamiento del servidor, utilizar Postman con los siguientes parámetros:
 // GET     http://localhost:8080?nombre=Luis&apellidos=delagarza
 
+const config = require('./config.js');
 require('dotenv').config();
 
 const model = require('./model/model');
