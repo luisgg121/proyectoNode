@@ -1,42 +1,42 @@
 // Para revisar el funcionamiento del servidor, utilizar Postman con los siguientes parámetros:
-// GET     http://localhost:8080?nombre=Luis&apellidos=delagarza
+// GET   http://localhost:8080/autores?accion=alta&nombre=Enrique&apellidos=Peña
 
-// const config = require('./config.js');
 require('dotenv').config();
 
 const model = require('./model/model');
 
 const express = require('express')
+const session = require('express-session')
 const bodyParser = require('body-parser')
 
 // Create a new instance of express
 const app = express()
 
+// Configuramos el middleware de sesión para usar una clave secreta personalizada y permitir que las sesiones se guarden 
+// automáticamente. Ahora podemos acceder a los datos de sesión en cada solicitud utilizando el objeto req.session.
+app.use(session({
+    // secret: 'my-secret-key',
+    secret: process.env.SESSION_SECRET || 'some-secret',
+    resave: false,
+    saveUninitialized: true
+}));
+
 // Tell express to use the body-parser middleware and to not parse extended bodies
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // Route that receives a POST request to /sms
-app.post('/sms', function (req, res) {
-    const body = req.body.Body
-    res.set('Content-Type', 'text/plain')
-    res.send(`You sent: ${body} to Express`)
-})
+// app.post('/sms', function (req, res) {
+//     const body = req.body.Body
+//     res.set('Content-Type', 'text/plain')
+//     res.send(`You sent: ${body} to Express`)
+// })
 
-// Tell our app to listen on port 8080
-app.listen(8080, function (err) {
-    if (err) {
-        throw err
-    }
-
-    console.log('Server started on port 8080')
-})
-
-const mysql = require('mysql');
+// const mysql = require('mysql');
 const http = require('http');
 const url = require('url');
 
-const host = 'localhost';
-const port = 8080;
+// const host = process.env.DB_HOST;
+const port = process.env.PORT;
 
 var accion = 'alta';
 var nombre = 'Luis';
@@ -66,84 +66,50 @@ const registro_libros = {
 }
 
 const registro = registro_autores;
-const tabla = 'autores'
+// const tabla = 'autores'
 
-const requestListener = function (req, res) {
-    if (req.method == 'GET') {
-        res.setHeader("Content-Type", "text/html");
-        res.writeHead(200);
-        const parsedUrl = url.parse(req.url, true);
-        console.log("req.url = " + req.url);
-        q = parsedUrl;
-        console.log(q.host); //returns 'localhost:8080'
-        console.log(q.pathname); //returns '/default.htm'
-        console.log(q.search); //returns '?year=2017&month=february'
-        console.log(q.query.accion);
-        console.log(q.query.nombre);
-        console.log(q.query.apellidos);
-        accion = q.query.accion;
-    } else if (req.method == 'POST') {
-        console.log('POST')
-        var body = ''
-        req.on('data', function (data) {
-            body += data;
-            console.log('Partial body: ' + body)
-        })
-        req.on('end', function () {
-            console.log('Body: ' + body)
-            res.writeHead(200, { 'Content-Type': 'text/html' })
-            res.end('post received')
-        })
-    }
+app.listen(port);
+console.log("Express server running");
 
-    switch (q.pathname) {
-        case "/autores":
-            const tabla = 'autores';
-            nombre = q.query.nombre;
-            apellidos = q.query.apellidos;
-            // res.writeHead(200);
-            // res.write(`Nombre: ${nombre}`);
-            res.write(`<html><body>`);
-            res.write(`<h1>Autores</h1>`);
-            res.write(`<p>${accion}</p>`);
-            res.write(`<p>${nombre}</p>`);
-            res.write(`<p>${apellidos}</p>`);
-            res.write(`<html><body>`);
-            // res.end(); //end the response
-            switch (accion) {
-                case "alta":
-                    registro_autores1.nombre = nombre;
-                    registro_autores1.apellidos = apellidos;
-                    model.insertar(tabla, registro_autores1);
-                    break
-                case "baja":
-                    id = q.query.id;
-                    model.eliminar(tabla, id)
-                    break
-                case "actualizar":
-                    model.actualizar_autores(tabla, registro);
-                    break
-                case "consultar":
-                    model.consultar(tabla, registro);
-                    break
-                default:
-                    res.writeHead(404);
-                    res.end(JSON.stringify({ error: "Resource not found" }));
-            }
+app.get("/autores", function (req, res) {
+    const tabla = 'autores';
+    const parsedUrl = url.parse(req.url, true);
+    console.log("req.url = " + req.url);
+    q = parsedUrl;
+    accion=q.query.accion;
+    nombre = q.query.nombre;
+    apellidos = q.query.apellidos;
+    // res.writeHead(200);
+    // res.write(`Nombre: ${nombre}`);
+    res.write(`<html><body>`);
+    res.write(`<h1>Autores</h1>`);
+    res.write(`<p>${accion}</p>`);
+    res.write(`<p>${nombre}</p>`);
+    res.write(`<p>${apellidos}</p>`);
+    res.write(`<html><body>`);
+    // res.end(); //end the response
+    switch (accion) {
+        case "alta":
+            registro_autores1.nombre = nombre;
+            registro_autores1.apellidos = apellidos;
+            model.insertar(tabla, registro_autores1);
             break
-        case "/libros":
-            // res.writeHead(200);
-            res.write(`<html><body><h1>Libros</h1></body></html>`);
+        case "baja":
+            id = q.query.id;
+            model.eliminar(tabla, id)
+            break
+        case "actualizar":
+            model.actualizar_autores(tabla, registro);
+            break
+        case "consultar":
+            model.consultar(tabla, registro);
             break
         default:
             res.writeHead(404);
             res.end(JSON.stringify({ error: "Resource not found" }));
     }
-}
+})
 
-const server = http.createServer(requestListener);
-
-server.listen(port, host, () => {
-    console.log(`Server is running on http://${host}:${port}`);
-
-});
+app.get('/libros', function (req, res) {
+    res.send(`<html><body><h1>Libros</h1></body></html>`);
+})
