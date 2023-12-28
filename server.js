@@ -4,22 +4,82 @@
 require('dotenv').config();
 
 const model = require('./model/model');
+// const login = require('./login');
 
 const express = require('express')
 const session = require('express-session')
 const bodyParser = require('body-parser')
+const cookieParser = require("cookie-parser");
 
 // Create a new instance of express
 const app = express()
 
+// parsing the incoming data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+//serving public file
+app.use(express.static(__dirname));
+
+app.use(cookieParser());
+
+// Configuramos el middleware de sesión para usar una clave secreta personalizada y permitir que las sesiones se guarden 
+// automáticamente. Ahora podemos acceder a los datos de sesión en cada solicitud utilizando el objeto req.session.
+// app.use(session({
+//     // secret: 'my-secret-key',
+//     secret: process.env.SESSION_SECRET || 'some-secret',
+//     resave: false,
+//     saveUninitialized: true
+// }));
+
+// Authentication and Authorization Middleware
+var auth = function (req, res, next) {
+    if (req.session && req.session.user === "amy" && req.session.admin)
+        return next();
+    else
+        return res.sendStatus(401);
+};
+
+
+// const login = express();
+
+
 // Configuramos el middleware de sesión para usar una clave secreta personalizada y permitir que las sesiones se guarden 
 // automáticamente. Ahora podemos acceder a los datos de sesión en cada solicitud utilizando el objeto req.session.
 app.use(session({
-    // secret: 'my-secret-key',
     secret: process.env.SESSION_SECRET || 'some-secret',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: { maxAge: 60000, }
 }));
+
+// Login endpoint
+app.get('/login', function (req, res) {
+    const parsedUrl = url.parse(req.url, true);
+    q = parsedUrl;
+    console.log(q);
+    req.query.username = q.query.userName;
+    req.query.password = q.query.password;
+    if (!req.query.username || !req.query.password) {
+        res.send('login failed' + req.query.username);
+    } else if (req.query.username === "amy" || req.query.password === "amyspassword") {
+        req.session.username = "amy";
+        req.session.password = "amyspassword";
+        req.session.admin = true;
+        res.send("login success!");
+    }
+});
+
+// // Logout endpoint
+app.get('/logout', function (req, res) {
+    req.session.destroy();
+    res.send("logout success!");
+});
+
+// Get content endpoint
+// app.get('/content', auth, function (req, res) {
+//     res.send("You can only see this after you've logged in.");
+// });
 
 // Tell express to use the body-parser middleware and to not parse extended bodies
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -72,44 +132,60 @@ app.listen(port);
 console.log("Express server running");
 
 app.get("/autores", function (req, res) {
-    const tabla = 'autores';
-    const parsedUrl = url.parse(req.url, true);
-    console.log("req.url = " + req.url);
-    q = parsedUrl;
-    accion=q.query.accion;
-    nombre = q.query.nombre;
-    apellidos = q.query.apellidos;
-    // res.writeHead(200);
-    // res.write(`Nombre: ${nombre}`);
-    res.write(`<html><body>`);
-    res.write(`<h1>Autores</h1>`);
-    res.write(`<p>${accion}</p>`);
-    res.write(`<p>${nombre}</p>`);
-    res.write(`<p>${apellidos}</p>`);
-    res.write(`<html><body>`);
-    // res.end(); //end the response
-    switch (accion) {
-        case "alta":
-            registro_autores1.nombre = nombre;
-            registro_autores1.apellidos = apellidos;
-            model.insertar(tabla, registro_autores1);
-            break
-        case "baja":
-            id = q.query.id;
-            model.eliminar(tabla, id)
-            break
-        case "actualizar":
-            model.actualizar_autores(tabla, registro);
-            break
-        case "consultar":
-            model.consultar(tabla, registro);
-            break
-        default:
-            res.writeHead(404);
-            res.end(JSON.stringify({ error: "Resource not found" }));
+
+    if (!req.session.username) {
+        res.end("No tienes permiso, favor de firmarte.");
+    } else {
+        // Ok, el usuario tiene permiso
+        res.write("Hola " + req.session.username);
+
+        const tabla = 'autores';
+        const parsedUrl = url.parse(req.url, true);
+        console.log("req.url = " + req.url);
+        q = parsedUrl;
+        accion = q.query.accion;
+        nombre = q.query.nombre;
+        apellidos = q.query.apellidos;
+        // res.writeHead(200);
+        // res.write(`Nombre: ${nombre}`);
+        res.write(`<html><body>`);
+        res.write(`<h1>Autores</h1>`);
+        res.write(`<p>${accion}</p>`);
+        res.write(`<p>${nombre}</p>`);
+        res.write(`<p>${apellidos}</p>`);
+        res.write(`<html><body>`);
+        // res.end(); //end the response
+        switch (accion) {
+            case "alta":
+                registro_autores1.nombre = nombre;
+                registro_autores1.apellidos = apellidos;
+                model.insertar(tabla, registro_autores1);
+                break
+            case "baja":
+                id = q.query.id;
+                model.eliminar(tabla, id)
+                break
+            case "actualizar":
+                model.actualizar_autores(tabla, registro);
+                break
+            case "consultar":
+                model.consultar(tabla, registro);
+                break
+            default:
+                res.writeHead(404);
+                res.end(JSON.stringify({ error: "Resource not found" }));
+        }
     }
 })
 
 app.get('/libros', function (req, res) {
-    res.send(`<html><body><h1>Libros</h1></body></html>`);
+    if (!req.session.username) {
+        res.end("No tienes permiso, favor de firmarte.");
+    } else {
+        // res.send(req.session.username);
+        res.send(`<html><body><h1>Libros: </h1></body></html>`);
+         
+    }
 })
+
+module.exports = app;
