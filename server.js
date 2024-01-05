@@ -131,8 +131,54 @@ const registro = registro_autores;
 app.listen(port);
 console.log("Express server running");
 
-app.get("/autores", function (req, res) {
+app.get("/tabla", function (req, res) {
+    if (!req.session.username) {
+        res.end("No tienes permiso, favor de firmarte.");
+    } else {
+        // Ok, el usuario tiene permiso
+        res.write("Hola " + req.session.username);
 
+        const tabla = 'autores';
+        const parsedUrl = url.parse(req.url, true);
+        console.log("req.url = " + req.url);
+        q = parsedUrl;
+        accion = q.query.accion;
+        nombre = q.query.nombre;
+        apellidos = q.query.apellidos;
+        // res.writeHead(200);
+        // res.write(`Nombre: ${nombre}`);
+        res.write(`<html><body>`);
+        res.write(`<h1>Autores</h1>`);
+        res.write(`<p>${accion}</p>`);
+        res.write(`<p>${nombre}</p>`);
+        res.write(`<p>${apellidos}</p>`);
+        res.write(`<html><body>`);
+        // res.end(); //end the response
+        switch (accion) {
+            case "alta":
+                registro_autores1.nombre = nombre;
+                registro_autores1.apellidos = apellidos;
+                model.insertar(tabla, registro_autores1);
+                break
+            case "baja":
+                id = q.query.id;
+                model.eliminar(tabla, id)
+                break
+            case "actualizar":
+                model.actualizar_autores(tabla, registro);
+                break
+            case "consultar":
+                model.consultar(tabla, registro);
+                break
+            default:
+                res.writeHead(404);
+                res.end(JSON.stringify({ error: "Resource not found" }));
+        }
+    }
+})
+
+
+app.get("/autores", function (req, res) {
     if (!req.session.username) {
         res.end("No tienes permiso, favor de firmarte.");
     } else {
