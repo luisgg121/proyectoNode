@@ -57,12 +57,22 @@ model.actualizar_autores = (tabla, registro) => {
     });
 }
 
-model.consultar = (tabla, registro) => {
-    connection.query(`select * from ${tabla}`, (err, rows) => {
+model.consultar = async (tabla, res) => {
+    await connection.query(`select * from ${tabla}`, (err, rows) => {
         if (err) throw err;
         console.log('Datos recibidos de la base de datos: ');
         console.log(rows);
+        // var respuesta = JSON.parse(JSON.stringify(rows));
+        var respuesta = JSON.stringify(rows);
+        console.log("Model.js --> Datos en json: " + respuesta);
+        res.send(rows);
+        // return respuesta;
     });
+
+
+
+    
+    // return rows;
 }
 
 model.eliminar = (tabla, id) => connection.query(`delete from ${tabla} where id = ?`, id, (err, rows) => {

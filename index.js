@@ -32,15 +32,76 @@
 //     };
 // }
 
-function loadTable() {
+// import { XMLHttpRequest } from './node_modules/xmlhttprequest'; 
+// import { XMLHttpRequest } from "./node_modules/xmlhttprequest"; 
+// require('node_modules/xmlhttprequest').XMLHttpRequest(); 
+document.getElementById("Autores").innerHTML = "<h2>Principio</h2>";
+
+// console.log("Antes de la llamada a la función loadTable()");
+
+
+loadTable();
+
+async function loadTable() {
+    document.getElementById("Autores").innerHTML = "Inicio de la función loadTable()";
+    fetch('http://localhost:8080/autores?accion=consultar')
+        .then(response => response.json())
+        .then(response => {
+            // let json = response.json();
+            // console.log("Con fetch" + response[0].id);
+            document.getElementById("Autores").innerHTML = "Dentro del fetch..." // + this.responseText;
+            console.log("Dentro del fetch results = : " + response); // JSON.parse(JSON.stringify(response)));
+            var trHTML = "";
+            // var objects = JSON.stringify(response);
+            
+            // console.log(objects[0].id);
+            //objects = JSON.parse(objects);
+            console.log("response = " + response);
+            objects = JSON.stringify(response);
+            objects = JSON.parse(objects);
+            console.log("objects = " + objects);
+            for (let object of objects) {
+                console.log("Object = " + object);
+                console.log("Object = " + object.id);
+                trHTML += "<tr>";
+                trHTML += "<td>" + object["id"] + "</td>";
+                trHTML += "<td>" + object["nombre"] + "</td>";
+                trHTML += "<td>" + object["apellidos"] + "</td>";
+                // trHTML += "<td>" + object["username"] + "</td>";
+                trHTML +=
+                    '<td><button type="button" class="btn btn-outline-secondary" onclick="showUserEditBox(' +
+                    object["id"] +
+                    ')">Edit</button>';
+                trHTML +=
+                    '<button type="button" class="btn btn-outline-danger" onclick="userDelete(' +
+                    object["id"] +
+                    ')">Del</button></td>';
+                trHTML += "</tr>";
+            }
+            document.getElementById("mytable").innerHTML = trHTML;
+        })
+        .catch(error => {
+            console.error('An error occurred in fetch:', error);
+        })
+}
+
+
+
+
+async function loadTable_conXMLHttpRequest() {
+    document.getElementById("Autores").innerHTML = "Inicio de la función loadTable()";
+    // console.log("Antes del open: ");
     const xhttp = new XMLHttpRequest();
     xhttp.open("GET", "http://localhost:8080/autores?accion=consultar");
+    // xhttp.responseType = "json";
     xhttp.send();
     xhttp.onreadystatechange = function () {
+        // console.log("RESPUESta: " + this.JSON);     //responseText);
         if (this.readyState == 4 && this.status == 200) {
-            console.log(this.responseText);
+            document.getElementById("Autores").innerHTML = "Dentro del onready 2..." // + this.responseText;
             var trHTML = "";
-            const objects = JSON.parse(this.responseText);
+            // 
+            const objects = JSON.parse(this.JSON);
             for (let object of objects) {
                 trHTML += "<tr>";
                 trHTML += "<td>" + object["id"] + "</td>";
@@ -48,9 +109,9 @@ function loadTable() {
                     '<td><img width="50px" src="' +
                     object["avatar"] +
                     '" class="avatar"></td>';
-                trHTML += "<td>" + object["fname"] + "</td>";
-                trHTML += "<td>" + object["lname"] + "</td>";
-                trHTML += "<td>" + object["username"] + "</td>";
+                trHTML += "<td>" + object["nombre"] + "</td>";
+                trHTML += "<td>" + object["apellidos"] + "</td>";
+                // trHTML += "<td>" + object["username"] + "</td>";
                 trHTML +=
                     '<td><button type="button" class="btn btn-outline-secondary" onclick="showUserEditBox(' +
                     object["id"] +
@@ -66,7 +127,8 @@ function loadTable() {
     };
 }
 
-loadTable();
+
+// loadTable();
 
 function showUserCreateBox() {
     Swal.fire({
