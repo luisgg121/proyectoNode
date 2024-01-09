@@ -149,12 +149,13 @@ app.get("/autores", async function (req, res) {
     } else {
         // Ok, el usuario tiene permiso
         // res.write("Hola " + req.session.username);
-
+        console.log("Estoy en el app.get /autores")
         const tabla = 'autores';
         const parsedUrl = url.parse(req.url, true);
         console.log("req.url = " + req.url);
         q = parsedUrl;
         accion = q.query.accion;
+        id = q.query.id;
         nombre = q.query.nombre;
         apellidos = q.query.apellidos;
         // res.writeHead(200);
@@ -168,6 +169,8 @@ app.get("/autores", async function (req, res) {
         // res.end(); //end the response
         switch (accion) {
             case "alta":
+                nombre = q.query.nombre;
+                apellidos = q.query.apellidos;
                 registro_autores1.nombre = nombre;
                 registro_autores1.apellidos = apellidos;
                 model.insertar(tabla, registro_autores1);
@@ -177,9 +180,26 @@ app.get("/autores", async function (req, res) {
                 model.eliminar(tabla, id)
                 break
             case "actualizar":
-                model.actualizar_autores(tabla, registro);
+                registro_autores.id = q.query.id;
+                registro_autores.nombre = q.query.nombre;
+                registro_autores.apellidos = q.query.apellidos;
+                model.actualizar_autores(tabla, registro_autores);
                 break
-            case "consultar":
+            case "consultarAutor":
+                registro_autores.id = q.query.id;
+                console.log("Case consultarAutor --- id = "+ q.query.id);
+                // model.consultar_autor(tabla, registro_autores);
+                await connection.query(`select * from ${tabla} where id = ?`, [q.query.id], (err, rows) => {
+                    console.log('Datos del autor recibidos de la base de datos: ');
+                    console.log(rows);
+                    // var respuesta = JSON.parse(JSON.stringify(rows));
+                    var respuesta = JSON.stringify(rows);
+                    console.log("Case consultarAutor --> Datos en json: " + respuesta );
+                    res.send(respuesta);
+                    res.end();
+                });
+                break
+            case "consultar_tabla":
                 await connection.query(`select * from ${tabla}`, (err, rows) => {
                     if (err) throw err;
                     console.log('Datos recibidos de la base de datos: ');
@@ -188,11 +208,12 @@ app.get("/autores", async function (req, res) {
                     var respuesta = JSON.stringify(rows);
                     respuesta = JSON.parse(respuesta);
                     console.log("Server.js --> Datos en json: " + respuesta);
-                    
+
                     console.log(typeof respuesta) // tipo de la variable respuesta
                     // res.send(rows);
                     console.log("Primer registro = " + respuesta[0].id + " " + respuesta[0].nombre);
                     res.send(respuesta);
+                    res.end();
                     // return respuesta;
                 });
                 // const respuesta = await model.consultar(tabla, res);
