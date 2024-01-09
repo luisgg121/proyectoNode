@@ -193,13 +193,18 @@ function showUserEditBox(id) {
             objects = JSON.parse(objects);
             console.log("showUserEditBox -- response.nombre = " + objects.nombre + typeof (response.nombre));
             console.log("objects = " + objects);
-            for (let object of objects) {
+            // ***************************************************************
+            response.id = 1;
+            response.nombre = "Luis";
+            response.apellidos = "de la Garza";
+            // ***************************************************************
+            //for (let object of objects) {
                 Swal.fire({
                     title: "Edición de autor",
                     html:
-                        // '<input id="id" type="hidden" value=' + response.id +
+                        '<input id="id" type="hidden" value=' + response.id +
                         // autor["id"] +
-                        // ">" +
+                        ">" +
                         '<input id="fname" class="swal2-input" placeholder="First" value="' + response.nombre +
                         // user["nombre"] +
                         '">' +
@@ -212,7 +217,7 @@ function showUserEditBox(id) {
                     }
                 }
                 )
-            }
+            // }
 
         })
         .catch(error => {
@@ -245,10 +250,11 @@ function showUserEditBox(id) {
 
 function userEdit() {
     // const id = document.getElementById("id").value;
+    const id = document.getElementById("id").value;
     const nombre = document.getElementById("fname").value;
     const apellidos = document.getElementById("lname").value;
 
-    fetch(`http://localhost:8080/autores?accion=actualizar&nombre=${nombre}&apellidos=${apellidos}`)
+    fetch(`http://localhost:8080/autores?accion=actualizar&id=${id}&nombre=${nombre}&apellidos=${apellidos}`)
         // .then(response => response.json())
         .then(response => {
             loadTable();
@@ -288,20 +294,32 @@ function userEdit() {
 // }
 
 function userDelete(id) {
-    const xhttp = new XMLHttpRequest();
-    xhttp.open("DELETE", "https://www.mecallapi.com/api/users/delete");
-    xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhttp.send(
-        JSON.stringify({
-            id: id,
-        })
-    );
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            const objects = JSON.parse(this.responseText);
-            Swal.fire(objects["message"]);
+    // const nombre = document.getElementById("fname").value;
+    // const apellidos = document.getElementById("lname").value;
+    // const username = document.getElementById("username").value;
+    // const email = document.getElementById("email").value;
+    fetch(`http://localhost:8080/autores?accion=baja&id=${id}`)
+        // .then(response => response.json())
+        .then(response => {
             loadTable();
-        }
-    };
+        })
+        .catch(error => {
+            console.error('An error occurred in fetch:', error);
+        })
+    // const xhttp = new XMLHttpRequest();
+    // xhttp.open("DELETE", "https://www.mecallapi.com/api/users/delete");
+    // xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    // xhttp.send(
+    //     JSON.stringify({
+    //         id: id,
+    //     })
+    // );
+    // xhttp.onreadystatechange = function () {
+    //     if (this.readyState == 4) {
+    //         const objects = JSON.parse(this.responseText);
+    //         Swal.fire(objects["message"]);
+    //         loadTable();
+    //     }
+    // };
 }
 
