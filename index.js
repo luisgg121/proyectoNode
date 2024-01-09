@@ -1,5 +1,7 @@
 document.getElementById("Autores").innerHTML = "<h2>Principio</h2>";
 
+var renglon = 1;
+
 loadTable();
 
 async function loadTable() {
@@ -31,7 +33,7 @@ async function loadTable() {
                 trHTML +=
                     '<td><button type="button" class="btn btn-outline-secondary" onclick="showUserEditBox(' +
                     object["id"] +
-                    '); updateRow(this);">Editar</button>';
+                    '); guardaRow(this);">Editar</button>';
                 trHTML +=
                     '<button type="button" class="btn btn-outline-danger" onclick="userDelete(' +
                     object["id"] +
@@ -113,9 +115,15 @@ function addRow(id, nombre, apellidos) {
     c2.innerText = nombre;
     c3.innerText = apellidos;
     c4.innerHTML = '<button type="button" class="btn btn-outline-secondary" onclick="showUserEditBox(' +
-        id + ')">Edit</button>' +
+        id + ')";>Edit</button>' +
         '<button type="button" class="btn btn-outline-danger" onclick="userDelete(' +
         id + '); deleteRow(this);">Del</button></td>';
+}
+
+function guardaRow(r) {
+    renglon = r;
+    console.log("Renglón = " + renglon);
+    return;
 }
 
 function updateRow(r) {
