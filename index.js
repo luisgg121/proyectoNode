@@ -1,44 +1,4 @@
-// function loadTable() {
-//     const xhttp = new XMLHttpRequest();
-//     xhttp.open("GET", "https://www.mecallapi.com/api/users");
-//     xhttp.send();
-//     xhttp.onreadystatechange = function () {
-//         if (this.readyState == 4 && this.status == 200) {
-//             console.log(this.responseText);
-//             var trHTML = "";
-//             const objects = JSON.parse(this.responseText);
-//             for (let object of objects) {
-//                 trHTML += "<tr>";
-//                 trHTML += "<td>" + object["id"] + "</td>";
-//                 trHTML +=
-//                     '<td><img width="50px" src="' +
-//                     object["avatar"] +
-//                     '" class="avatar"></td>';
-//                 trHTML += "<td>" + object["fname"] + "</td>";
-//                 trHTML += "<td>" + object["lname"] + "</td>";
-//                 trHTML += "<td>" + object["username"] + "</td>";
-//                 trHTML +=
-//                     '<td><button type="button" class="btn btn-outline-secondary" onclick="showUserEditBox(' +
-//                     object["id"] +
-//                     ')">Edit</button>';
-//                 trHTML +=
-//                     '<button type="button" class="btn btn-outline-danger" onclick="userDelete(' +
-//                     object["id"] +
-//                     ')">Del</button></td>';
-//                 trHTML += "</tr>";
-//             }
-//             document.getElementById("mytable").innerHTML = trHTML;
-//         }
-//     };
-// }
-
-// import { XMLHttpRequest } from './node_modules/xmlhttprequest'; 
-// import { XMLHttpRequest } from "./node_modules/xmlhttprequest"; 
-// require('node_modules/xmlhttprequest').XMLHttpRequest(); 
 document.getElementById("Autores").innerHTML = "<h2>Principio</h2>";
-
-// console.log("Antes de la llamada a la función loadTable()");
-
 
 loadTable();
 
@@ -71,12 +31,13 @@ async function loadTable() {
                 trHTML +=
                     '<td><button type="button" class="btn btn-outline-secondary" onclick="showUserEditBox(' +
                     object["id"] +
-                    ')">Edit</button>';
+                    '); updateRow(this);">Editar</button>';
                 trHTML +=
                     '<button type="button" class="btn btn-outline-danger" onclick="userDelete(' +
                     object["id"] +
-                    ')">Del</button></td>';
+                    '); deleteRow(this);">Borrar</button></td>';
                 trHTML += "</tr>";
+                // onclick="
             }
             document.getElementById("mytable").innerHTML = trHTML;
         })
@@ -85,50 +46,13 @@ async function loadTable() {
         })
 }
 
+function deleteRow(r) {
+    var i = r.parentNode.parentNode.rowIndex;
+    console.log("ParentNode row = " + i)
+    document.getElementById("tabla").deleteRow(i);
+}
 
 
-
-// async function loadTable_conXMLHttpRequest() {
-//     document.getElementById("Autores").innerHTML = "Inicio de la función loadTable()";
-//     // console.log("Antes del open: ");
-//     const xhttp = new XMLHttpRequest();
-//     xhttp.open("GET", "http://localhost:8080/autores?accion=consultar");
-//     // xhttp.responseType = "json";
-//     xhttp.send();
-//     xhttp.onreadystatechange = function () {
-//         // console.log("RESPUESta: " + this.JSON);     //responseText);
-//         if (this.readyState == 4 && this.status == 200) {
-//             document.getElementById("Autores").innerHTML = "Dentro del onready 2..." // + this.responseText;
-//             var trHTML = "";
-//             // 
-//             const objects = JSON.parse(this.JSON);
-//             for (let object of objects) {
-//                 trHTML += "<tr>";
-//                 trHTML += "<td>" + object["id"] + "</td>";
-//                 trHTML +=
-//                     '<td><img width="50px" src="' +
-//                     object["avatar"] +
-//                     '" class="avatar"></td>';
-//                 trHTML += "<td>" + object["nombre"] + "</td>";
-//                 trHTML += "<td>" + object["apellidos"] + "</td>";
-//                 // trHTML += "<td>" + object["username"] + "</td>";
-//                 trHTML +=
-//                     '<td><button type="button" class="btn btn-outline-secondary" onclick="showUserEditBox(' +
-//                     object["id"] +
-//                     ')">Edit</button>';
-//                 trHTML +=
-//                     '<button type="button" class="btn btn-outline-danger" onclick="userDelete(' +
-//                     object["id"] +
-//                     ')">Del</button></td>';
-//                 trHTML += "</tr>";
-//             }
-//             document.getElementById("mytable").innerHTML = trHTML;
-//         }
-//     };
-// }
-
-
-// loadTable();
 
 function showUserCreateBox() {
     Swal.fire({
@@ -152,71 +76,87 @@ function userCreate() {
     // const username = document.getElementById("username").value;
     // const email = document.getElementById("email").value;
     fetch(`http://localhost:8080/autores?accion=alta&nombre=${nombre}&apellidos=${apellidos}`)
-        // .then(response => response.json())
+        .then(response => response.json())
         .then(response => {
-            loadTable();
+            // console.log("Dentro de userCreate, response = " + JSON.parse(JSON.stringify(response)));
+            // console.log( JSON.parse(response));
+            object = JSON.stringify(response);
+            object = JSON.parse(object);
+            console.log("Dentro de userCreate, response = " + object);
+            console.log("Dentro de userCreate, response id = " + object["id"]);
+            console.log(nombre);
+            console.log(apellidos);
+            addRow(object["id"], nombre, apellidos);
+            // loadTable();
         })
         .catch(error => {
             console.error('An error occurred in fetch:', error);
         })
 }
 
-//     const xhttp = new XMLHttpRequest();
-//     xhttp.open("POST", "https://www.mecallapi.com/api/users/create");
-//     xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-//     xhttp.send(
-//         JSON.stringify({
-//             fname: fname,
-//             lname: lname,
-//             username: username,
-//             email: email,
-//             avatar: "https://www.mecallapi.com/users/cat.png",
-//         })
-//     );
-//     xhttp.onreadystatechange = function () {
-//         if (this.readyState == 4 && this.status == 200) {
-//             const objects = JSON.parse(this.responseText);
-//             Swal.fire(objects["message"]);
-//             loadTable();
-//         }
-//     };
-// }
+function addRow(id, nombre, apellidos) {
+    // Get the table element in which you want to add row
+    let table = document.getElementById("mytable");
+
+    // Create a row using the inserRow() method and
+    // specify the index where you want to add the row
+    let row = table.insertRow(-1); // We are adding at the end
+
+    // Create table cells
+    let c1 = row.insertCell(0);
+    let c2 = row.insertCell(1);
+    let c3 = row.insertCell(2);
+    let c4 = row.insertCell(3);
+
+    // Add data to c1 and c2
+    c1.innerText = id;
+    c2.innerText = nombre;
+    c3.innerText = apellidos;
+    c4.innerHTML = '<button type="button" class="btn btn-outline-secondary" onclick="showUserEditBox(' +
+        id + ')">Edit</button>' +
+        '<button type="button" class="btn btn-outline-danger" onclick="userDelete(' +
+        id + '); deleteRow(this);">Del</button></td>';
+}
+
+function updateRow(r) {
+    var i = r.parentNode.parentNode.rowIndex;
+    console.log("ParentNode row = " + i)
+    // document.getElementById("tabla").deleteRow(i);
+    return i;
+}
+
 
 function showUserEditBox(id) {
     console.log(id);
     fetch(`http://localhost:8080/autores?accion=consultarAutor&id=${id}`)
-        // .then(response => response.json())
+        .then(response => response.json())
         .then(response => {
-            response => response.json();
+            object = JSON.stringify(response);
+            object = JSON.parse(object);
+            console.log("Dentro de showUserEditBox, object = " + object);
+            console.log("showUserEditBox, response id = " + object[0]["id"]);
             console.log("response = " + response);
-            objects = JSON.stringify(response);
-            objects = JSON.parse(objects);
-            console.log("showUserEditBox -- response.nombre = " + objects.nombre + typeof (response.nombre));
-            console.log("objects = " + objects);
-            // ***************************************************************
-            response.id = 1;
-            response.nombre = "Luis";
-            response.apellidos = "de la Garza";
-            // ***************************************************************
-            //for (let object of objects) {
-                Swal.fire({
-                    title: "Edición de autor",
-                    html:
-                        '<input id="id" type="hidden" value=' + response.id +
-                        // autor["id"] +
-                        ">" +
-                        '<input id="fname" class="swal2-input" placeholder="First" value="' + response.nombre +
-                        // user["nombre"] +
-                        '">' +
-                        '<input id="lname" class="swal2-input" placeholder="Last" value="' + response.apellidos +
-                        // user["apellidos"] +
-                        '">',
-                    focusConfirm: false,
-                    preConfirm: () => {
-                        userEdit();
-                    }
+            console.log("showUserEditBox -- response.nombre = " + object[0]["nombre"] + typeof (object[0]["nombre"]));
+
+            Swal.fire({
+                title: "Edición de autor",
+                html:
+                    '<input id="id" type="hidden" value=' + object[0]["id"] +
+                    // autor["id"] +
+                    ">" +
+                    '<input id="fname" class="swal2-input" placeholder="First" value="' + object[0]["nombre"] +
+                    // user["nombre"] +
+                    '">' +
+                    '<input id="lname" class="swal2-input" placeholder="Last" value="' + object[0]["apellidos"] +
+                    // user["apellidos"] +
+                    '">',
+                focusConfirm: false,
+                preConfirm: () => {
+                    userEdit();
                 }
-                )
+
+            }
+            )
             // }
 
         })
@@ -226,28 +166,6 @@ function showUserEditBox(id) {
 }
 
 
-
-
-
-
-
-// const xhttp = new XMLHttpRequest();
-
-// xhttp.open("GET", "https://www.mecallapi.com/api/users/" + id);
-// xhttp.send();
-// xhttp.onreadystatechange = function () {
-//     if (this.readyState == 4 && this.status == 200) {
-//         const objects = JSON.parse(this.responseText);
-//         const user = objects["user"];
-//         console.log(user);
-
-// '<input id="username" class="swal2-input" placeholder="Username" value="' +
-// user["username"] +
-// '">' +
-// '<input id="email" class="swal2-input" placeholder="Email" value="' +
-// user["email"] +
-// '">',
-
 function userEdit() {
     // const id = document.getElementById("id").value;
     const id = document.getElementById("id").value;
@@ -255,43 +173,18 @@ function userEdit() {
     const apellidos = document.getElementById("lname").value;
 
     fetch(`http://localhost:8080/autores?accion=actualizar&id=${id}&nombre=${nombre}&apellidos=${apellidos}`)
-        // .then(response => response.json())
+        .then(response => response.json())
         .then(response => {
-            loadTable();
+            
+            // loadTable();
+
         })
+        
         .catch(error => {
             console.error('An error occurred in fetch:', error);
         })
 }
 
-// function userEdit() {
-//     const id = document.getElementById("id").value;
-//     const fname = document.getElementById("fname").value;
-//     const lname = document.getElementById("lname").value;
-//     const username = document.getElementById("username").value;
-//     const email = document.getElementById("email").value;
-
-//     const xhttp = new XMLHttpRequest();
-//     xhttp.open("PUT", "https://www.mecallapi.com/api/users/update");
-//     xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-//     xhttp.send(
-//         JSON.stringify({
-//             id: id,
-//             fname: fname,
-//             lname: lname,
-//             username: username,
-//             email: email,
-//             avatar: "https://www.mecallapi.com/users/cat.png",
-//         })
-//     );
-//     xhttp.onreadystatechange = function () {
-//         if (this.readyState == 4 && this.status == 200) {
-//             const objects = JSON.parse(this.responseText);
-//             Swal.fire(objects["message"]);
-//             loadTable();
-//         }
-//     };
-// }
 
 function userDelete(id) {
     // const nombre = document.getElementById("fname").value;
@@ -306,20 +199,5 @@ function userDelete(id) {
         .catch(error => {
             console.error('An error occurred in fetch:', error);
         })
-    // const xhttp = new XMLHttpRequest();
-    // xhttp.open("DELETE", "https://www.mecallapi.com/api/users/delete");
-    // xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    // xhttp.send(
-    //     JSON.stringify({
-    //         id: id,
-    //     })
-    // );
-    // xhttp.onreadystatechange = function () {
-    //     if (this.readyState == 4) {
-    //         const objects = JSON.parse(this.responseText);
-    //         Swal.fire(objects["message"]);
-    //         loadTable();
-    //     }
-    // };
 }
 

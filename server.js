@@ -155,7 +155,7 @@ app.get("/autores", async function (req, res) {
         console.log("req.url = " + req.url);
         q = parsedUrl;
         accion = q.query.accion;
-        id = q.query.id;
+        if (q.query.id) id = q.query.id;
         nombre = q.query.nombre;
         apellidos = q.query.apellidos;
         // res.writeHead(200);
@@ -173,7 +173,25 @@ app.get("/autores", async function (req, res) {
                 apellidos = q.query.apellidos;
                 registro_autores1.nombre = nombre;
                 registro_autores1.apellidos = apellidos;
-                model.insertar(tabla, registro_autores1);
+                // id = model.insertar(tabla, registro_autores1);
+                await connection.query(`insert into ${tabla} set ?`, registro_autores1, (err, result) => {
+                    if (err) throw err;
+                    console.log(result + result.insertId);
+                    console.log("insertId = " + result.insertId);
+                    id = result.insertId;
+                    console.log("model.insertar id = " + id);
+                    console.log("model.response.id = " + id)
+                    console.log("stringify.id = " + JSON.stringify(id));
+                    let objeto = '{"id":' + JSON.stringify(id) + "}"
+                    console.log("Objeto = " + objeto);
+                    // objeto = JSON.stringify(objeto);
+                    // console.log("Objeto = " + objeto + " " +typeof(objeto));
+                    // objeto = JSON.parse(JSON.stringify(objeto));
+                    // console.log("Objeto = " + objeto + " " +typeof(objeto));
+                    
+                    res.send(objeto);
+                    res.end();
+                })
                 break
             case "baja":
                 id = q.query.id;
@@ -187,14 +205,15 @@ app.get("/autores", async function (req, res) {
                 break
             case "consultarAutor":
                 registro_autores.id = q.query.id;
-                console.log("Case consultarAutor --- id = "+ q.query.id);
+                console.log("Case consultarAutor --- id = " + q.query.id);
                 // model.consultar_autor(tabla, registro_autores);
                 await connection.query(`select * from ${tabla} where id = ?`, [q.query.id], (err, rows) => {
                     console.log('Datos del autor recibidos de la base de datos: ');
                     console.log(rows);
                     // var respuesta = JSON.parse(JSON.stringify(rows));
                     var respuesta = JSON.stringify(rows);
-                    console.log("Case consultarAutor --> Datos en json: " + respuesta );
+                    respuesta = JSON.parse(respuesta);
+                    console.log("Case consultarAutor --> Datos en json: " + respuesta);
                     res.send(respuesta);
                     res.end();
                 });

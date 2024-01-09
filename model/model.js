@@ -43,11 +43,17 @@ const connection = mysql.createConnection({
 
 // Funciones CRUD
 model.insertar = (tabla, registro) => {
-    console.log('DB_PASS = ' + process.env.DB_PASS);
+    var id;
+    // console.log('DB_PASS = ' + process.env.DB_PASS);
     connection.query(`insert into ${tabla} set ?`, registro, (err, result) => {
         if (err) throw err;
-        console.log(result);
+        console.log(result + result.insertId);
+        console.log("insertId = " + result.insertId);
+        id = result.insertId;
+        console.log("model.insertar id = " + id);
+        return(id);
     });
+ 
 }
 
 model.actualizar_autores = (tabla, registro) => {
