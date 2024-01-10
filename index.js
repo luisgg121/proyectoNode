@@ -115,14 +115,14 @@ function addRow(id, nombre, apellidos) {
     c2.innerText = nombre;
     c3.innerText = apellidos;
     c4.innerHTML = '<button type="button" class="btn btn-outline-secondary" onclick="showUserEditBox(' +
-        id + ')";>Edit</button>' +
+        id + ')";>Editar</button>' +
         '<button type="button" class="btn btn-outline-danger" onclick="userDelete(' +
-        id + '); deleteRow(this);">Del</button></td>';
+        id + '); deleteRow(this);">Borrar</button></td>';
 }
 
 function guardaRow(r) {
-    renglon = r;
-    console.log("Renglón = " + renglon);
+    rowIndex = r.parentNode.parentNode.rowIndex;;
+    console.log("RowIndex = " + rowIndex);
     return;
 }
 
@@ -160,12 +160,10 @@ function showUserEditBox(id) {
                     '">',
                 focusConfirm: false,
                 preConfirm: () => {
-                    userEdit();
+                    // userEdit();
                 }
-
-            }
-            )
-            // }
+            }            )
+            userEdit();
 
         })
         .catch(error => {
@@ -181,13 +179,19 @@ function userEdit() {
     const apellidos = document.getElementById("lname").value;
 
     fetch(`http://localhost:8080/autores?accion=actualizar&id=${id}&nombre=${nombre}&apellidos=${apellidos}`)
-        .then(response => response.json())
+        // .then(response => response.json())
         .then(response => {
+            table = document.getElementById("tabla");
+            row = table.rows[rowIndex];
+            console.log("Renglón a actualizar: " + row);
+            let c2 = row.SelectSingleNode("td[1]");
+            let c3 = row.SelectSingleNode("td[2]");
             
-            // loadTable();
+            c2.innerText = nombre;
+            c3.innerText = apellidos;
 
         })
-        
+
         .catch(error => {
             console.error('An error occurred in fetch:', error);
         })

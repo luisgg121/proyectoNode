@@ -3,6 +3,8 @@
 
 require('dotenv').config();
 
+global.rowIndex = 0;
+
 const model = require('./model/model');
 // const login = require('./login');
 
@@ -24,13 +26,17 @@ app.use(express.static(__dirname));
 app.use(cookieParser());
 
 const mysql = require('mysql');
-const connection = mysql.createConnection({
-    localhost: process.env.DB_HOST,
+// const connection = mysql.createConnection({
+global.connection = mysql.createConnection({
+    // localhost: process.env.DB_HOST,
+    host: process.env.DB_HOST,  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT
 })
+
+console.log("Connection = " + connection);
 
 const tabla = 'autores';
 
@@ -280,4 +286,7 @@ app.get('/libros', function (req, res) {
     }
 })
 
-module.exports = app;
+// module.exports = app;
+module.exports.connection = connection;
+
+

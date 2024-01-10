@@ -1,4 +1,8 @@
 require('../node_modules/dotenv').config();
+// let con = require('../server');
+// console.log("Con =" + JSON.stringify(con));
+// let connection = con.connection;
+// console.log("Con2 =" + JSON.stringify(connection));
 
 const express = require('express');
 const model = express();
@@ -33,13 +37,13 @@ const registro_libros = {
 const registro = registro_autores;
 const tabla = 'autores'
 
-const connection = mysql.createConnection({
-    localhost: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
-})
+// const connection = mysql.createConnection({
+//     localhost: process.env.DB_HOST,
+//     user: process.env.DB_USER,
+//     password: process.env.DB_PASS,
+//     database: process.env.DB_NAME,
+//     port: process.env.DB_PORT
+// })
 
 // Funciones CRUD
 model.insertar = (tabla, registro) => {
@@ -51,9 +55,9 @@ model.insertar = (tabla, registro) => {
         console.log("insertId = " + result.insertId);
         id = result.insertId;
         console.log("model.insertar id = " + id);
-        return(id);
+        return (id);
     });
- 
+
 }
 
 model.actualizar_autores = (tabla, registro) => {
