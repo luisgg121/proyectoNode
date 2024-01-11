@@ -27,7 +27,7 @@ app.use(cookieParser());
 
 const mysql = require('mysql');
 // const connection = mysql.createConnection({
-global.connection = mysql.createConnection({
+connection = mysql.createConnection({
     // localhost: process.env.DB_HOST,
     host: process.env.DB_HOST,  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     user: process.env.DB_USER,
@@ -39,7 +39,7 @@ global.connection = mysql.createConnection({
 connection.connect((err) => {
     if (err) throw err;
     console.log('Connected!');
-  });
+});
 
 console.log("Connection = " + connection);
 
@@ -106,14 +106,7 @@ app.get('/logout', function (req, res) {
 // Tell express to use the body-parser middleware and to not parse extended bodies
 app.use(bodyParser.urlencoded({ extended: false }))
 
-// Route that receives a POST request to /sms
-// app.post('/sms', function (req, res) {
-//     const body = req.body.Body
-//     res.set('Content-Type', 'text/plain')
-//     res.send(`You sent: ${body} to Express`)
-// })
 
-// const mysql = require('mysql');
 const http = require('http');
 const url = require('url');
 
@@ -148,7 +141,6 @@ const registro_libros = {
 }
 
 const registro = registro_autores;
-// const tabla = 'autores'
 
 app.listen(port);
 console.log("Express server running");
@@ -169,15 +161,6 @@ app.get("/autores", async function (req, res) {
         if (q.query.id) id = q.query.id;
         nombre = q.query.nombre;
         apellidos = q.query.apellidos;
-        // res.writeHead(200);
-        // res.write(`Nombre: ${nombre}`);
-        // res.write(`<html><body>`);
-        // res.write(`<h1>Autores</h1>`);
-        // res.write(`<p>${accion}</p>`);
-        // res.write(`<p>${nombre}</p>`);
-        // res.write(`<p>${apellidos}</p>`);
-        // res.write(`<html><body>`);
-        // res.end(); //end the response
         switch (accion) {
             case "alta":
                 nombre = q.query.nombre;
@@ -199,7 +182,7 @@ app.get("/autores", async function (req, res) {
                     // console.log("Objeto = " + objeto + " " +typeof(objeto));
                     // objeto = JSON.parse(JSON.stringify(objeto));
                     // console.log("Objeto = " + objeto + " " +typeof(objeto));
-                    
+
                     res.send(objeto);
                     res.end();
                 })
