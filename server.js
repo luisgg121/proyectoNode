@@ -14,8 +14,8 @@ const bodyParser = require('body-parser')
 const cookieParser = require("cookie-parser");
 
 // Create a new instance of express
-// const app = express()
-const app = express.Router()
+const app = express()
+// const app = express.Router()
 // parsing the incoming data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
