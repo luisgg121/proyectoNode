@@ -36,6 +36,11 @@ global.connection = mysql.createConnection({
     port: process.env.DB_PORT
 })
 
+connection.connect((err) => {
+    if (err) throw err;
+    console.log('Connected!');
+  });
+
 console.log("Connection = " + connection);
 
 const tabla = 'autores';
