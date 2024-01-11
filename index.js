@@ -7,7 +7,7 @@ loadTable();
 async function loadTable() {
     document.getElementById("Autores").innerHTML = "Inicio de la función loadTable()";
     // fetch('http://localhost:8080/autores?accion=consultar_tabla')
-    fetch('https://localhost/autores?accion=consultar_tabla')
+    fetch('https://localhost:443/autores?accion=consultar_tabla')
         .then(response => response.json())
         .then(response => {
             // let json = response.json();
