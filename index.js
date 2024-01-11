@@ -7,7 +7,7 @@ loadTable();
 async function loadTable() {
     document.getElementById("Autores").innerHTML = "Inicio de la función loadTable()";
     // fetch('http://localhost:8080/autores?accion=consultar_tabla')
-    fetch('https://luis121.netlify.app/:443/autores?accion=consultar_tabla')
+    fetch('https://luis121.netlify.app:443/autores?accion=consultar_tabla')
         .then(response => response.json())
         .then(response => {
             // let json = response.json();
