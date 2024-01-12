@@ -5,29 +5,30 @@ require('dotenv').config();
 
 global.rowIndex = 0;
 
-const model = require('./model/model');
+const model = require('../../model/model');
 // const login = require('./login');
 
 const express = require('express')
 const session = require('express-session')
 const bodyParser = require('body-parser')
 const cookieParser = require("cookie-parser");
+const serverless = require('serverless-http');
 
-import express, { Router } from "express";
-import serverless from "serverless-http";
+// import express, { Router } from "express";
+// import serverless from "serverless-http";
 
 // Create a new instance of express
 const app = express()
-const router = Router();
+const router = express.Router();
 // const app = express.Router()
 // parsing the incoming data
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+router.use(express.json());
+router.use(express.urlencoded({ extended: true }));
 
 //serving public file
-app.use(express.static(__dirname));
+router.use(express.static(__dirname));
 
-app.use(cookieParser());
+router.use(cookieParser());
 
 const mysql = require('mysql');
 // const connection = mysql.createConnection({
@@ -72,7 +73,7 @@ var auth = function (req, res, next) {
 
 // Configuramos el middleware de sesión para usar una clave secreta personalizada y permitir que las sesiones se guarden 
 // automáticamente. Ahora podemos acceder a los datos de sesión en cada solicitud utilizando el objeto req.session.
-app.use(session({
+router.use(session({
     secret: process.env.SESSION_SECRET || 'some-secret',
     resave: false,
     saveUninitialized: true,
@@ -80,7 +81,7 @@ app.use(session({
 }));
 
 // Login endpoint
-app.get('/login', function (req, res) {
+router.get('/login', function (req, res) {
     const parsedUrl = url.parse(req.url, true);
     q = parsedUrl;
     console.log(q);
@@ -97,7 +98,7 @@ app.get('/login', function (req, res) {
 });
 
 // // Logout endpoint
-app.get('/logout', function (req, res) {
+router.get('/logout', function (req, res) {
     req.session.destroy();
     res.send("logout success!");
 });
@@ -108,7 +109,7 @@ app.get('/logout', function (req, res) {
 // });
 
 // Tell express to use the body-parser middleware and to not parse extended bodies
-app.use(bodyParser.urlencoded({ extended: false }))
+router.use(bodyParser.urlencoded({ extended: false }))
 
 
 const http = require('http');
@@ -146,7 +147,7 @@ const registro_libros = {
 
 const registro = registro_autores;
 
-app.listen(port);
+router.listen(port);
 console.log("Express server running");
 
 // app.get("/autores", async function (req, res) {
@@ -157,7 +158,7 @@ router.get("/autores", async function (req, res) {
     } else {
         // Ok, el usuario tiene permiso
         // res.write("Hola " + req.session.username);
-        console.log("Estoy en el app.get /autores")
+        console.log("Estoy en el router.get /autores")
         const tabla = 'autores';
         const parsedUrl = url.parse(req.url, true);
         console.log("req.url = " + req.url);
@@ -269,7 +270,7 @@ router.get("/autores", async function (req, res) {
     }
 })
 
-app.get('/libros', function (req, res) {
+router.get('/libros', function (req, res) {
     if (!req.session.username) {
         res.end("No tienes permiso, favor de firmarte.");
     } else {
@@ -283,4 +284,4 @@ app.get('/libros', function (req, res) {
 module.exports.connection = connection;
 
 
-export const handler = serverless(app);
+// export const handler = serverless(router);
