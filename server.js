@@ -13,8 +13,12 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 const cookieParser = require("cookie-parser");
 
+import express, { Router } from "express";
+import serverless from "serverless-http";
+
 // Create a new instance of express
 const app = express()
+const router = Router();
 // const app = express.Router()
 // parsing the incoming data
 app.use(express.json());
@@ -145,7 +149,8 @@ const registro = registro_autores;
 app.listen(port);
 console.log("Express server running");
 
-app.get("/autores", async function (req, res) {
+// app.get("/autores", async function (req, res) {
+router.get("/autores", async function (req, res) {
     // if (!req.session.username) {
     if (false) {
         res.end("No tienes permiso, favor de firmarte.");
