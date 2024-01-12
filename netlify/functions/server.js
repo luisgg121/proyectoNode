@@ -20,6 +20,8 @@ const serverless = require('serverless-http');
 // Create a new instance of express
 const app = express()
 const router = express.Router();
+
+server.use('/.netlify/functions/', router);
 // const app = express.Router()
 // parsing the incoming data
 router.use(express.json());
