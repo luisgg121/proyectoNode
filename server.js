@@ -18,7 +18,7 @@ const cookieParser = require("cookie-parser");
 
 // Create a new instance of express
 const app = express()
-app = app();
+// app = app();
 // const app = express.app()
 // parsing the incoming data
 app.use(express.json());
@@ -280,7 +280,7 @@ app.get('/libros', function (req, res) {
 })
 
 // module.exports = app;
-module.exports.connection = connection;
+// module.exports.connection = connection;
 
 
 // export const handler = serverless(app);
