@@ -283,4 +283,4 @@ app.get('/libros', function (req, res) {
 module.exports.connection = connection;
 
 
-export const handler = serverless(app);
+// export const handler = serverless(app);
