@@ -1,4 +1,7 @@
 document.getElementById("Autores").innerHTML = "<h2>Principio</h2>";
+const host = 'srv463361.hstgr.cloud';
+const port = 8080
+protocolo = 'http'
 
 var renglon = 1;
 
@@ -6,8 +9,7 @@ loadTable();
 
 async function loadTable() {
     document.getElementById("Autores").innerHTML = "Inicio de la función loadTable()";
-    // fetch('https://luis121.netlify.app/autores?accion=consultar_tabla')
-    fetch('https://luis121.netlify.app:443/autores?accion=consultar_tabla')
+    fetch(`${protocolo}://${host}:${port}/autores?accion=consultar_tabla`)
         .then(response => response.json())
         .then(response => {
             // let json = response.json();
@@ -78,7 +80,7 @@ function userCreate() {
     const apellidos = document.getElementById("lname").value;
     // const username = document.getElementById("username").value;
     // const email = document.getElementById("email").value;
-    fetch(`http://localhost:8080/autores?accion=alta&nombre=${nombre}&apellidos=${apellidos}`)
+    fetch(`${protocolo}://${host}:${port}/autores?accion=alta&nombre=${nombre}&apellidos=${apellidos}`)
         .then(response => response.json())
         .then(response => {
             // console.log("Dentro de userCreate, response = " + JSON.parse(JSON.stringify(response)));
@@ -137,7 +139,7 @@ function updateRow(r) {
 
 function showUserEditBox(id) {
     console.log(id);
-    fetch(`http://localhost:8080/autores?accion=consultarAutor&id=${id}`)
+    fetch(`${protocolo}://${host}:${port}/autores?accion=consultarAutor&id=${id}`)
         .then(response => response.json())
         .then(response => {
             object = JSON.stringify(response);
@@ -179,7 +181,7 @@ function userEdit() {
     const nombre = document.getElementById("fname").value;
     const apellidos = document.getElementById("lname").value;
 
-    fetch(`http://localhost:8080/autores?accion=actualizar&id=${id}&nombre=${nombre}&apellidos=${apellidos}`)
+    fetch(`${protocolo}://${host}:${port}/autores?accion=actualizar&id=${id}&nombre=${nombre}&apellidos=${apellidos}`)
         // .then(response => response.json())
         .then(response => {
             table = document.getElementById("tabla");
@@ -204,7 +206,7 @@ function userDelete(id) {
     // const apellidos = document.getElementById("lname").value;
     // const username = document.getElementById("username").value;
     // const email = document.getElementById("email").value;
-    fetch(`http://localhost:8080/autores?accion=baja&id=${id}`)
+    fetch(`${protocolo}://${host}:${port}/autores?accion=baja&id=${id}`)
         // .then(response => response.json())
         .then(response => {
             loadTable();
