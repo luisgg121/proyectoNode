@@ -17,8 +17,8 @@ const cookieParser = require("cookie-parser");
 // import serverless from "serverless-http";
 
 // Create a new instance of express
-// const app = express()
-const app = app();
+const app = express()
+app = app();
 // const app = express.app()
 // parsing the incoming data
 app.use(express.json());
