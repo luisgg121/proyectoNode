@@ -13,8 +13,8 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 const cookieParser = require("cookie-parser");
 
-import express, { app } from "express";
-import serverless from "serverless-http";
+// import express, { app } from "express";
+// import serverless from "serverless-http";
 
 // Create a new instance of express
 // const app = express()
