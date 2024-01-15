@@ -1,5 +1,6 @@
 document.getElementById("Autores").innerHTML = "<h2>Principio</h2>";
-const host = 'srv463361.hstgr.cloud';
+// const host = 'srv463361.hstgr.cloud';
+const host = 'localhost';
 const port = 8080
 protocolo = 'http'
 
@@ -113,7 +114,7 @@ function addRow(id, nombre, apellidos) {
     let c3 = row.insertCell(2);
     let c4 = row.insertCell(3);
 
-    // Add data to c1 and c2
+    // Add data to c1 ... c4
     c1.innerText = id;
     c2.innerText = nombre;
     c3.innerText = apellidos;
@@ -163,11 +164,10 @@ function showUserEditBox(id) {
                     '">',
                 focusConfirm: false,
                 preConfirm: () => {
-                    // userEdit();
+                    userEdit();
                 }
-            }            )
-            userEdit();
 
+            })
         })
         .catch(error => {
             console.error('An error occurred in fetch:', error);
@@ -181,15 +181,22 @@ function userEdit() {
     const nombre = document.getElementById("fname").value;
     const apellidos = document.getElementById("lname").value;
 
+    console.log('Datos para actualizar = ' + id + ' ' + nombre + ' ' + apellidos + ' ' + rowIndex);
     fetch(`${protocolo}://${host}:${port}/autores?accion=actualizar&id=${id}&nombre=${nombre}&apellidos=${apellidos}`)
-        // .then(response => response.json())
         .then(response => {
-            table = document.getElementById("tabla");
+            response.json();
+            console.log("response.json");
+        })
+        .then(response => {
+            object = JSON.stringify(response);
+            object = JSON.parse(object);
+            console.log("userEdit -- response.nombre = " + object[0]["nombre"] + typeof (object[0]["nombre"]));
+            table = document.getElementById("mytable");
             row = table.rows[rowIndex];
-            console.log("Renglón a actualizar: " + row);
+            console.log("Renglón a actualizar: " + rowIndex);
             let c2 = row.SelectSingleNode("td[1]");
             let c3 = row.SelectSingleNode("td[2]");
-            
+
             c2.innerText = nombre;
             c3.innerText = apellidos;
 
@@ -198,6 +205,17 @@ function userEdit() {
         .catch(error => {
             console.error('An error occurred in fetch:', error);
         })
+    i = rowIndex - 1
+    console.log("Renglón a actualizar: " + i);
+    document.getElementById('mytable').rows[i].cells[1].innerText = nombre;
+    document.getElementById('mytable').rows[i].cells[2].innerText = apellidos;
+    // table = document.getElementById("mytable");
+    // row = table.rows[rowIndex];
+    // console.log("Renglón a actualizar: " + rowIndex);
+    // let c2 = row.SelectSingleNode("td[1]");
+    // let c3 = row.SelectSingleNode("td[2]");
+    // c2.innerText = nombre;
+    // c3.innerText = apellidos;
 }
 
 
