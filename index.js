@@ -104,9 +104,10 @@ function userCreate() {
     const apellidos = document.getElementById("lname").value;
     // const username = document.getElementById("username").value;
     // const email = document.getElementById("email").value;
-    fetch(`${protocolo}://${host}:${port}/autores?accion=alta&nombre=${nombre}&apellidos=${apellidos}`)
+    fetch(`${protocolo}://${host}:${port}?tabla=autores&accion=alta&nombre=${nombre}&apellidos=${apellidos}`)
         .then(response => response.json())
         .then(response => {
+            alert(response);
             // console.log("Dentro de userCreate, response = " + JSON.parse(JSON.stringify(response)));
             // console.log( JSON.parse(response));
             object = JSON.stringify(response);
@@ -163,7 +164,7 @@ function updateRow(r) {
 
 function showUserEditBox(id) {
     console.log(id);
-    fetch(`${protocolo}://${host}:${port}/autores?accion=consultarAutor&id=${id}`)
+    fetch(`${protocolo}://${host}:${port}?tabla=autores&accion=consultarAutor&id=${id}`)
         .then(response => response.json())
         .then(response => {
             object = JSON.stringify(response);

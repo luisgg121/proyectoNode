@@ -60,6 +60,46 @@ if (isset($_GET['accion'])) {
 
 // $parametro = "consultar_tabla";
 switch ($parametro) {
+    case "alta":
+        $conn = conectarBd();
+        $tabla = 'autores';
+        $nombre = $_GET['nombre'];
+        $apellidos = $_GET['apellidos'];
+
+        // $nombre = "Hugo";
+        // $apellidos = "Lomeli";
+
+        // registro_autores1.nombre = nombre;
+        // registro_autores1.apellidos = apellidos;
+        // id = model.insertar(tabla, registro_autores1);
+        $sql = "INSERT INTO autores (nombre,apellidos) VALUES ('" . $nombre . "','" . $apellidos . "')";
+        // $sql = "INSERT INTO autores (nombre,apellidos) VALUES (Hugo, Huesca)";
+        $result = $conn->query($sql);
+
+        // Convierte el array en una cadena JSON
+        $jsonString = json_encode($result);
+        // Devuelve la cadena JSON
+        echo $jsonString;
+
+        // if (err) throw err;
+        //     console.log(result + result.insertId);
+        //     console.log("insertId = " + result.insertId);
+        //     id = result.insertId;
+        //     console.log("model.insertar id = " + id);
+        //     console.log("model.response.id = " + id)
+        //     console.log("stringify.id = " + JSON.stringify(id));
+        //     let objeto = '{"id":' + JSON.stringify(id) + "}"
+        //     console.log("Objeto = " + objeto);
+        // objeto = JSON.stringify(objeto);
+        // console.log("Objeto = " + objeto + " " +typeof(objeto));
+        // objeto = JSON.parse(JSON.stringify(objeto));
+        // console.log("Objeto = " + objeto + " " +typeof(objeto));
+
+        // res . send(objeto);
+        // res . end();
+
+        cerrarConexion($conn);
+        break;
     case "baja":
         $conn = conectarBd();
         $tabla = 'autores';
