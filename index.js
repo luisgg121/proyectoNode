@@ -1,21 +1,44 @@
 document.getElementById("Autores").innerHTML = "<h2>Principio</h2>";
-// const host = 'srv463361.hstgr.cloud';
-const host = 'localhost';
-const port = 8080
-protocolo = 'http'
+const host = 'localhost/env.php';
+const port = 80;
+const protocolo = 'http';
 
 var renglon = 1;
 
-loadTable();
+datos = {
+    tabla: 'autores',
+    accion: 'consultar_tabla'
+};
 
-async function loadTable() {
-    document.getElementById("Autores").innerHTML = "Inicio de la función loadTable()";
-    fetch(`${protocolo}://${host}:${port}/autores?accion=consultar_tabla`)
+loadTable(datos);
+
+async function loadTable(datos) {
+    // url = `${protocolo}://${host}:${port}?tabla=autores&accion=consultar_tabla`;
+    url = "http://localhost/env.php?tabla=autores&accion=consultar_tabla";
+    document.getElementById("Autores").innerHTML = `Inicio de la función loadTable() <<>> ${url}`;
+    // fetch(`${protocolo}://${host}:${port}/autores?accion=consultar_tabla`)
+    // fetch(`${protocolo}://${host}:${port}?tabla=autores&accion=consultar_tabla`)
+    // 
+
+    // fetch('http://localhost/index.php', {
+    //     method: 'POST',
+    //     body: JSON.stringify(datos), // Convierte los datos a formato JSON
+    //     headers: {
+    //         'Content-Type': 'application/json; charset=UTF-8'
+    //     }
+    // })
+
+    // ===============================================================================
+    // fetch(url, {
+    //     method: 'GET',
+    //     headers: { "Content-type": "application/json;charset=UTF-8" }
+    // })
+    fetch("http://localhost/env.php?tabla=autores&accion=consultar_tabla")
         .then(response => response.json())
         .then(response => {
             // let json = response.json();
             // console.log("Con fetch" + response[0].id);
-            document.getElementById("Autores").innerHTML = "Dentro del fetch..." // + this.responseText;
+            document.getElementById("Autores").innerHTML = "Dentro del fetch..>>" // + this.responseText;
             console.log("Dentro del fetch results = : " + response); // JSON.parse(JSON.stringify(response)));
             var trHTML = "";
             // var objects = JSON.stringify(response);
@@ -224,7 +247,8 @@ function userDelete(id) {
     // const apellidos = document.getElementById("lname").value;
     // const username = document.getElementById("username").value;
     // const email = document.getElementById("email").value;
-    fetch(`${protocolo}://${host}:${port}/autores?accion=baja&id=${id}`)
+    alert(`http://localhost/env.php?tabla=autores&accion=baja&id=${id}`);
+    fetch(`http://localhost/env.php?tabla=autores&accion=baja&id=${id}`)
         // .then(response => response.json())
         .then(response => {
             loadTable();
