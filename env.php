@@ -108,6 +108,34 @@ switch ($parametro) {
         $result = $conn->query($sql);
         cerrarConexion($conn);
         break;
+    case "actualizar":
+        $conn = conectarBd();
+        $tabla = 'autores';
+        // registro_autores . id = q . query . id;
+        // registro_autores . nombre = q . query . nombre;
+        // registro_autores . apellidos = q . query . apellidos;
+        // model . actualizar_autores(tabla, registro_autores);
+        cerrarConexion($conn);
+        break;
+    case "consultarAutor":
+        $conn = conectarBd();
+        $tabla = 'autores';
+        // registro_autores.id = q.query.id;
+        // console.log("Case consultarAutor --- id = " + q.query.id);
+        // // model.consultar_autor(tabla, registro_autores);
+        // await connection.query(`select * from ${tabla} where id = ?`, [q.query.id], (err, rows) => {
+        //     console.log('Datos del autor recibidos de la base de datos: ');
+        //     console.log(rows);
+        //     // var respuesta = JSON.parse(JSON.stringify(rows));
+        //     var respuesta = JSON.stringify(rows);
+        //     respuesta = JSON.parse(respuesta);
+        //     console.log("Case consultarAutor --> Datos en json: " + respuesta);
+        //     res.send(respuesta);
+        //     res.end();
+        // });
+        cerrarConexion($conn);
+        break;
+
     case "consultar_tabla":
         header("Content-Type: application/json");
         $conn = conectarBd();
