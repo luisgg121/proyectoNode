@@ -103,7 +103,7 @@ switch ($parametro) {
     case "baja":
         $conn = conectarBd();
         $tabla = 'autores';
-        $id = $_GET['id'];
+
         $sql = "delete from autores where	id = " . $id;
         $result = $conn->query($sql);
         cerrarConexion($conn);
@@ -111,10 +111,11 @@ switch ($parametro) {
     case "actualizar":
         $conn = conectarBd();
         $tabla = 'autores';
-        // registro_autores . id = q . query . id;
-        // registro_autores . nombre = q . query . nombre;
-        // registro_autores . apellidos = q . query . apellidos;
-        // model . actualizar_autores(tabla, registro_autores);
+        $id = $_GET['id'];
+        $nombre = $_GET['nombre'];
+        $apellidos = $_GET['apellidos'];
+        $sql = "UPDATE $tabla SET nombre = " . $nombre . ", apellidos = " . $apellidos . " WHERE id = " . $id;
+        $result = $conn->query($sql);
         cerrarConexion($conn);
         break;
     case "consultarAutor":
